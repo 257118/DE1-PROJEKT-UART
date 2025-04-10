@@ -2,3 +2,18 @@ Module Structure:
 
 * ascii_input
 This module is designed for entering a single ASCII character using switches (sw[7:0]) and confirming the input with a button (BTNC). After pressing the button, the character is saved and a ready signal is generated, which informs the rest of the system (e.g., a UART transmitter) that the character is ready to be sent.
+
+* uart_tx
+The uart_tx module is a UART transmitter. It receives a single 8-bit character (in ASCII encoding) and transmits it via the UART protocol through a single signal wire, tx_line.
+
+* baud_select
+This module is used to select the data transmission speed (baud rate) in a UART system using two buttons — BTNL and BTNR on the Nexys A7-50T board.
+
+* uart_rx
+The uart_rx module implements UART data reception (UART Receiver) — it receives one 8-bit character via the serial input rx, and when the entire character is received correctly (including start and stop bits), it sets the rx_done flag and outputs the received byte on data_out.
+
+* bin2seg
+The bin2seg module performs conversion of a 4-bit binary input into a control signal for a 7-segment display, allowing the display of digits (0–9) and letters (A–F) in hexadecimal format.
+
+* top_level
+The top_level module is the top-level module that integrates all parts of your UART system on the Nexys A7-50T board. It provides input, transmission, reception, and display of ASCII characters, controlled via switches and buttons.
