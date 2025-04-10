@@ -1,28 +1,25 @@
 Module Structure:
 
-* top_level (Top Module)
-The main module that connects all other modules. It handles routing of signals between the board’s inputs/outputs and the internal logic blocks.
-
-* mode_control
-This module is responsible for switching between Tx/Rx modes when the BTNU button is pressed.
-
-* baud_rate_control
-This module switches the baud rate between 4800 and 9600 when the BTNL button is pressed. The output of this module is used as a parameter for the UART.
-
-* input_buffer
-A buffer that receives data from the switches and stores the current bit set. The BTNC button sends the data for processing.
-
-* ascii_decoder
-This module converts an 8-bit input (from the switches or buffer) to an ASCII symbol, which is then displayed on the 7-segment display.
-
-* seven_segment_display
-Responsible for displaying the current symbol on the display.
+* ascii_input
+This module is designed for entering a single ASCII character using switches (sw[7:0]) 
+and confirming the input with a button (BTNC). After pressing the button, 
+the character is saved and a ready signal is generated, which informs the rest of the system (e.g., a UART transmitter) that the character is ready to be sent.
 
 * uart_tx
-The UART transmission module. It is activated by the BTNR (SEND) button and sends the symbol selected by the user.
+The uart_tx module is a UART transmitter. 
+It receives a single 8-bit character (in ASCII encoding) and transmits it via the UART protocol through a single signal wire, tx_line.
+
+* baud_select
+This module is used to select the data transmission speed (baud rate) in a UART system using two buttons — BTNL and BTNR on the Nexys A7-50T board.
 
 * uart_rx
-The UART reception module. In Rx mode, it receives data and sends it to the seven_segment_display.
+The uart_rx module implements UART data reception (UART Receiver) — it receives one 8-bit character via the serial input rx, 
+and when the entire character is received correctly (including start and stop bits), it sets the rx_done flag and outputs the received byte on data_out.
 
-* reset_controller
-Monitors the BTND (RESET) button and resets mode_control, baud_rate_control, input_buffer, and others.
+* bin2seg
+The bin2seg module performs conversion of a 4-bit binary input into a control signal for a 7-segment display, 
+allowing the display of digits (0–9) and letters (A–F) in hexadecimal format.
+
+* top_level
+The top_level module is the top-level module that integrates all parts of your UART system on the Nexys A7-50T board. 
+It provides input, transmission, reception, and display of ASCII characters, controlled via switches and buttons.
